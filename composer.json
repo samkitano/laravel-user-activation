@@ -1,0 +1,33 @@
+{
+    "name": "samkitano/LaravelUserActivation",
+    "description": "User Activation by confirmation email for Laravel 5.2",
+    "keywords": [
+        "laravel",
+        "user",
+        "activation",
+        "email"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sam Kitano",
+            "email": "sam.kitano@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.0",
+        "illuminate/support": "5.*",
+        "illuminate/database": "5.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Kitano\\UserActivation\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Kitano\\Tests\\UserActivation\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev"
+}
