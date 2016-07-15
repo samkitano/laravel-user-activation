@@ -1,5 +1,5 @@
 {
-    "name": "samkitano/LaravelUserActivation",
+    "name": "samkitano/laravel-user-activation",
     "description": "User Activation by confirmation email for Laravel 5.2",
     "keywords": [
         "laravel",
