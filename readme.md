@@ -37,6 +37,8 @@ All email outputs are queued, for improved performance.
 
 ## Installation
 
+After creating your Authentication routes and views with `php artisan make:auth`:
+
 1 - Require with Composer: `composer require samkitano/LaravelUserActivation`
 
 2 - Include the service provider in the 'providers' array within `config/app.php`.
@@ -83,12 +85,12 @@ class AuthController extends Controller
 6 - Check out `app\config\user_activation.php` to set your own defaults (email address, token lifetime,
 templates, etc.), and that's it.
 
-*DON'T FORGET* to configure your *mail provider* in `app\config\mail.php`. Otherwise, no emails will be sent whatsoever.
+**DON'T FORGET** to configure your *mail provider* in `app\config\mail.php`. Otherwise, no emails will be sent whatsoever.
 Please check out [Laravel Mail Documentation](https://laravel.com/docs/5.2/mail) for that matter.
 
 Of course, you may want to change the packages's views and email templates, or even the translation file to suit your needs. Feel free to do so.
 
-*NOTE* - Although not tested, the package should work fine with any user provider other than `App\User::class`,
+**NOTE** - Although not tested, the package should work fine with any user provider other than `App\User::class`,
 as long as you add an 'active', boolean, default to 0 field to your users table, and include that attribute in the $fillable
 array of your model.
 
