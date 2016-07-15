@@ -1,6 +1,6 @@
 # User activation for Laravel 5.2
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/samkitano/laravel-user-activation.svg?style=flat-square)](https://packagist.org/packages/samkitano/laravel-user-activation)
+[![Latest Version on Packagist](https://img.shields.io/packagist/dt/samkitano/laravel-user-activation.svg?style=flat-square)](https://packagist.org/packages/samkitano/laravel-user-activation)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Total Downloads](https://img.shields.io/packagist/dt/samkitano/laravel-user-activation.svg?style=flat-square)](https://packagist.org/packages/samkitano/laravel-user-activation)
 
