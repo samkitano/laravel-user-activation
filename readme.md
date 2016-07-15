@@ -1,9 +1,8 @@
 # User activation for Laravel 5.2
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/samkitano/laragrowl.svg?style=flat-square)](https://packagist.org/packages/samkitano/laragrowl)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/samkitano/laravel-user-activation.svg?style=flat-square)](https://packagist.org/packages/samkitano/laravel-user-activation)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
-[![Build Status](https://img.shields.io/travis/samkitano/laragrowl/master.svg?style=flat-square)](https://travis-ci.org/samkitano/laragrowl)
-[![Total Downloads](https://img.shields.io/packagist/dt/samkitano/laragrowl.svg?style=flat-square)](https://packagist.org/packages/samkitano/laragrowl)
+[![Total Downloads](https://img.shields.io/packagist/dt/samkitano/laravel-user-activation.svg?style=flat-square)](https://packagist.org/packages/samkitano/laravel-user-activation)
 
 This package implements a simple user verification by email by means of a random token, aka "Activation Code".
 
