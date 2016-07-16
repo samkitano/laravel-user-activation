@@ -60,9 +60,16 @@ After creating your Authentication routes and views with `php artisan make:auth`
     php artisan migrate
 ```
 
-5 - Replace Traits in  `app\Http\Controllers\Auth\AuthController.php`
+5 - Import and Replace Traits in  `app\Http\Controllers\Auth\AuthController.php`
 
 ```php
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use Kitano\UserActivation\Traits\ActivatesUsers;
+//...
+
 class AuthController extends Controller
 {
     /*
@@ -80,6 +87,7 @@ class AuthController extends Controller
     // with:
     use ThrottlesLogins, ActivatesUsers;
 
+    // ...
 ```
 
 6 - Include attribute 'active' in the $fillable array of your User model.
