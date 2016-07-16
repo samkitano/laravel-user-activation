@@ -153,7 +153,7 @@ return [
     |
     */
 
-    'admin_email' => 'sam.kitano@gmail.com',
+    'admin_email' => 'admin@example.com',
 
     /*
     |--------------------------------------------------------------------------
