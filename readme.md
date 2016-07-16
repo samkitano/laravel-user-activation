@@ -82,7 +82,9 @@ class AuthController extends Controller
 
 ```
 
-6 - Check out `app\config\user_activation.php` to set your own defaults (email address, token lifetime,
+6 - Include attribute 'active' in the $fillable array of your User model.
+
+7 - Check out `app\config\user_activation.php` to set your own defaults (email address, token lifetime,
 templates, etc.), and that's it.
 
 **DON'T FORGET** to configure your *mail provider* in `app\config\mail.php`. Otherwise, no emails will be sent whatsoever.
