@@ -39,7 +39,7 @@ All email outputs are queued, for improved performance.
 
 After creating your Authentication routes and views with `php artisan make:auth` proceed with installation:
 
-1 - Require with Composer: `composer require samkitano/LaravelUserActivation`
+1 - Require with Composer: `composer require samkitano/laravel-user-activation`
 
 2 - Include the service provider in the 'providers' array within `config/app.php`.
 
