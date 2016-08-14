@@ -124,8 +124,8 @@ class UserActivationService
         $token      = $this->generateToken();
         $model      = new $this->auth_model;
         $this->user = is_null($user)
-                    ? $model->find($activation->user_id)
-                    : $user;
+            ? $model->find($activation->user_id)
+            : $user;
 
         $activation->update(
             [
@@ -250,9 +250,9 @@ class UserActivationService
         $data = $this->prepareDataForUser();
 
         Mailer::queue($this->template, $data, function ($message) {
-                 $message->from($this->from, $this->config['from_name'])
-                         ->subject($this->subject)
-                         ->to($this->to);
+            $message->from($this->from, $this->config['from_name'])
+                    ->subject($this->subject)
+                    ->to($this->to);
         });
 
         if ($this->sendToAdmin) {

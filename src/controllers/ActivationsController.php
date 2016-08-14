@@ -26,46 +26,15 @@ class ActivationsController extends Controller
         $user = $this->activateUser($token);
 
         if ($user) {
-            // We don't need to force the user to a first time login after registration.
-            // Let's keep it simple, and authenticate at once.
-            Auth::login($user);
-
-            return redirect($this->redirectPath())
-                ->with(
-                    'auth_status',
-                    [
-                        'process' => 'activation',
-                        'success' => true,
-                        'alert'   => 'success',
-                        'message' => trans('activation.registration.login_success')
-                    ]
-                );
+            return $this->handleActivationSuccessful($user);
         }
 
         // no such token
         if (is_null($user)) {
-            return redirect('/register')
-                ->with(
-                    'auth_status',
-                    [
-                        'process' => 'activation',
-                        'success' => false,
-                        'alert'   => 'error',
-                        'message' => trans('activation.registration.invalid_token')
-                    ]
-                );
+            return $this->handleNoSuchToken();
         }
 
-        return redirect($this->redirectPath())
-            ->with(
-                'auth_status',
-                [
-                    'process' => 'activation',
-                    'success' => false,
-                    'alert'   => 'warning',
-                    'message' => trans('activation.registration.email_resent'),
-                ]
-            );
+        return $this->handleTokenExpired();
     }
 
     /**
@@ -87,51 +56,153 @@ class ActivationsController extends Controller
      */
     public function postResend(Request $request)
     {
-        $input = array_except($request->input(), '_token');
-        $valid = Auth::attempt($input);
+        $defaultModel = config('auth.providers.users.model');
+        $userModel    = new $defaultModel;
+        $user         = $userModel->where('email', $request->input('email'))
+                                  ->first();
 
-        if ($valid) {
-            Auth::logout();
-            $defaultModel = config('auth.providers.users.model');
-            $userModel    = new $defaultModel;
-
-            $user = $userModel->where('email', $input['email'])->first();
-
-            if ($user->active) {
-                Auth::login($user);
-                return redirect($this->redirectPath())
-                    ->with(
-                        'auth_status',
-                        [
-                            'process' => 'token_request',
-                            'success' => true,
-                            'alert'   => 'success',
-                            'message' => trans('activation.registration.already_active'),
-                        ]
-                    );
-            }
-
-            $this->sendNewTokenByUserRequest($user);
-
-            return redirect('/')->with(
-                'auth_status',
-                [
-                    'process' => 'token_request',
-                    'success' => true,
-                    'alert'   => 'success',
-                    'message' => trans('activation.registration.confirm_email')
-                ]
-            );
+        if ( ! $user) {
+            return $this->handleNoSuchUser($request);
         }
 
-        return redirect('/register')->with(
+        if ($user->active) {
+            return $this->handleAreadyActiveUser($request);
+        }
+
+        return $this->handleSendToken($request, $user);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     */
+    private function handleNoSuchUser(Request $request)
+    {
+        $response = [
+            'process' => 'token',
+            'success' => false,
+            'alert'   => 'alert-warning',
+            'message' => trans('activation.registration.no_such_email'),
+        ];
+
+        if ($request->ajax()) {
+            return response()->json(['auth_status' => $response], 200);
+        }
+
+        return redirect($this->redirectPath())
+            ->with(
+                'auth_status',
+                $response
+            );
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     */
+    private function handleAreadyActiveUser( Request $request )
+    {
+        $response = [
+            'process' => 'token',
+            'success' => false,
+            'alert'   => 'alert-warning',
+            'message' => trans('activation.registration.already_active'),
+        ];
+
+        if ($request->ajax()) {
+            return response()->json(['auth_status' => $response], 200);
+        }
+
+        return redirect($this->redirectPath())
+            ->with(
+                'auth_status',
+                $response
+            );
+    }
+
+    /**
+     * @param Request $request
+     * @param         $user
+     *
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     */
+    private function handleSendToken(Request $request, $user)
+    {
+        $this->sendNewTokenByUserRequest($user);
+
+        $response = [
+            'process' => 'token',
+            'success' => true,
+            'alert'   => 'alert-success',
+            'message' => trans('activation.registration.token_resent')
+        ];
+
+        if ($request->ajax()) {
+            return response()->json(['auth_status' => $response], 200);
+        }
+
+        return redirect('/')->with(
             'auth_status',
-            [
-                'process' => 'token_request',
-                'success' => false,
-                'alert'   => 'error',
-                'message' => trans('activation.registration.invalid_credentials'),
-            ]
+            $response
         );
+    }
+
+    /**
+     * @param $user
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    private function handleActivationSuccessful($user)
+    {
+        // We don't need to force the user to a first time login after registration.
+        // Let's keep it simple, and authenticate at once.
+        Auth::login( $user );
+
+        return redirect($this->redirectPath())
+            ->with(
+                'auth_status',
+                [
+                    'process' => 'activation',
+                    'success' => true,
+                    'alert'   => 'alert-success',
+                    'message' => trans( 'activation.registration.activation_success' )
+                ]
+            );
+    }
+
+    /**
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    private function handleNoSuchToken()
+    {
+        return redirect($this->redirectPath())
+            ->with(
+                'auth_status',
+                [
+                    'process' => 'activation',
+                    'success' => false,
+                    'alert'   => 'alert-danger',
+                    'message' => trans('activation.registration.invalid_token')
+                ]
+            );
+    }
+
+    /**
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    private function handleTokenExpired()
+    {
+        return redirect($this->redirectPath())
+            ->with(
+                'auth_status',
+                [
+                    'process' => 'activation',
+                    'success' => false,
+                    'alert'   => 'alert-warning',
+                    'message' => trans('activation.registration.email_resent'),
+                ]
+            );
     }
 }

@@ -44,7 +44,7 @@ trait ActivatesUsers
     {
         $activation = $this->repository->findByToken($token);
 
-        if ($activation === null) {
+        if (is_null($activation)) {
             return null;
         }
 
@@ -55,6 +55,11 @@ trait ActivatesUsers
         }
 
         $user = $this->model->find($activation->user_id);
+
+        if (is_null($user)) {
+            return null;
+        }
+
         $user->active = true;
         $user->save();
 
@@ -85,14 +90,20 @@ trait ActivatesUsers
 
         $this->create($request->all());
 
+        $response = [
+            'process' => 'register',
+            'success' => true,
+            'alert'   => 'alert-warning',
+            'message' => trans('activation.registration.confirm_email')
+        ];
+
+        if ($request->ajax()) {
+            return response()->json(['auth_status' => $response], 200);
+        }
+
         return redirect($this->redirectPath())->with(
             'auth_status',
-            [
-                'process' => 'register',
-                'success' => true,
-                'alert'   => 'success',
-                'message' => trans('activation.registration.confirm_email'),
-            ]
+            $response
         );
     }
 
@@ -143,25 +154,56 @@ trait ActivatesUsers
             // we don't want a yet non-active User logging in now, do we?
             Auth::logout();
 
+            $response = [
+                'process' => 'login',
+                'success' => false,
+                'alert'   => 'alert-warning',
+                'message' => $message,
+            ];
+
+            if ($request->ajax()) {
+                return response()->json(['auth_status' => $response], 200);
+            }
+
             return back()->with(
                 'auth_status',
-                [
-                    'process' => 'login',
-                    'success' => false,
-                    'alert'   => 'warning',
-                    'message' => $message,
-                ]
+                $response
             );
+        }
+
+        $response = [
+            'process' => 'login',
+            'success' => true,
+            'alert'   => 'alert-success',
+            'message' => trans('activation.registration.login_success'),
+        ];
+
+        if ($request->ajax()) {
+            return response()->json(['auth_status' => $response], 200);
         }
 
         return redirect()->intended('/')->with(
             'auth_status',
-            [
-                'process' => 'login',
-                'success' => true,
-                'alert'   => 'success',
-                'message' => trans('activation.registration.login_success'),
-            ]
+            $response
         );
+    }
+
+    protected function sendFailedLoginResponse(Request $request)
+    {
+        if ($request->ajax()) {
+            $response = [
+                'process' => 'login',
+                'success' => false,
+                'alert'   => 'alert-danger',
+                'message' => $this->getFailedLoginMessage()
+            ];
+            return response()->json(['auth_status' => $response], 200);
+        }
+
+        return redirect()->back()
+                         ->withInput($request->only($this->loginUsername(), 'remember'))
+                         ->withErrors([
+                             $this->loginUsername() => $this->getFailedLoginMessage(),
+                         ]);
     }
 }

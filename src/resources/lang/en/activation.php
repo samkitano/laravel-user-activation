@@ -14,6 +14,7 @@ return [
         "invalid_credentials" => "Invalid Credentials.",
         "invalid_token"       => "Invalid Activation Code. Please Register to get a proper token.",
         "login_success"       => "You are logged in.",
+        "no_such_email"       => "No such email in my records!"
     ],
 
     "emails" => [
@@ -23,7 +24,7 @@ return [
         "resend_subject"        => "Your New Activation Code",
         "send_subject"          => "Activate Your Account",
         "welcome_subject"       => "Welcome!",
-        
+
         "welcome" => [
             "title"   => "Welcome",
             "heading" => "Welcome to my website, :username",
